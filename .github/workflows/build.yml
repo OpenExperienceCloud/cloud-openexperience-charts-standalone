@@ -19,9 +19,9 @@ jobs:
       id: install
     - name: Login to Github Container Registry (in Helm)
       run: echo ${{ secrets.GH_TOKEN }} | helm registry login -u ${{ github.repository_owner }} --password-stdin https://ghcr.io
-      env:
-        HELM_EXPERIMENTAL_OCI: '1'
     - name: Save Chart
       run: helm chart save . ghcr.io/openexperiencecloud/cloud-openexperience-charts-standalone:latest
     - name: Push Chart
       run: helm chart push ghcr.io/openexperiencecloud/cloud-openexperience-charts-standalone:latest
+    env:
+      HELM_EXPERIMENTAL_OCI: '1'
