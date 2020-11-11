@@ -1,0 +1,27 @@
+# This workflow will build a Java project with Maven
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-maven
+
+name: Maven Build
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install docker
+      uses: azure/setup-helm@v1
+      id: install
+    - name: Login to Github Container Registry (in Helm)
+      run: echo ${{ secrets.GH_TOKEN }} | helm registry login -u ${{ github.repository_owner }} --password-stdin https://ghcr.io
+      env:
+        HELM_EXPERIMENTAL_OCI: '1'
+    - name: Save Chart
+      run: helm chart save . ghcr.io/openexperiencecloud/cloud-openexperience-charts-standalone:latest
+    - name: Push Chart
+      run: helm chart push ghcr.io/openexperiencecloud/cloud-openexperience-charts-standalone:latest
