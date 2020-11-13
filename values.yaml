@@ -6,12 +6,12 @@ replicaCount: 1
 
 image:
   cms:
-    repository: ghcr.io/openexperiencecloud/cloud.openexperience.content.images.base
+    repository: openexperiencecloud.jfrog.io/docker/cloud.openexperience.content.images.base
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: 1.0.0-snapshot
   web:
-    repository: ghcr.io/openexperiencecloud/cloud.openexperience.content.images.webcache
+    repository: openexperiencecloud.jfrog.io/docker/cloud.openexperience.content.images.webcache
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
     tag: 1.0.0-snapshot
