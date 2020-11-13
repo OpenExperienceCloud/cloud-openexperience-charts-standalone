@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>cloud.openexperience</groupId>
+    <artifactId>cloud.openexperience.charts.standalone</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <name>Open Experience Content - Standalone Chart</name>
+    <packaging>jar</packaging>
+
+    <properties>
+        <HELM_USERNAME>${env.HELM_USERNAME}</HELM_USERNAME>
+        <HELM_PASSWORD>${env.HELM_PASSWORD}</HELM_PASSWORD>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.6.0</version>
+                <executions>
+                    <execution>
+                        <id>helm-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>helm</executable>
+                            <workingDirectory>${project.basedir}/src/main/helm</workingDirectory>
+                            <arguments>
+                                <argument>lint</argument>
+                                <argument>.</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>helm-package</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>helm</executable>
+                            <workingDirectory>${project.basedir}</workingDirectory>
+                            <longModulepath>false</longModulepath>
+                            <arguments>
+                                <argument>package</argument>
+                                <argument>./src/main/helm/</argument>
+                                <argument>--version</argument>
+                                <argument>${project.version}</argument>
+                                <argument>-d</argument>
+                                <argument>./target/</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>docker-push</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>exec</goal>
+                        </goals>
+                        <configuration>
+                            <executable>curl</executable>
+                            <workingDirectory>${project.basedir}</workingDirectory>
+                            <arguments>
+                                <argument>-u</argument>
+                                <argument>${HELM_USERNAME}:${HELM_PASSWORD}</argument>
+                                <argument>-X</argument>
+                                <argument>PUT</argument>
+                                <argument>https://openexperiencecloud.jfrog.io/artifactory/helm/cloud-openexperience-charts-standalone-${project.version}.tgz</argument>
+                                <argument>-T</argument>
+                                <argument>./target/cloud-openexperience-charts-standalone-${project.version}.tgz</argument>
+                            </arguments>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

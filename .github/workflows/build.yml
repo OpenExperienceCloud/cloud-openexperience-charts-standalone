@@ -17,13 +17,12 @@ jobs:
     - name: Install helm
       uses: azure/setup-helm@v1
       id: install
-    - name: Login to Github Container Registry (in Helm)
-      run: echo ${{ secrets.HELM_TOKEN }} | helm registry login -u ${{ secrets.HELM_USERNAME }} --password-stdin https://openexperiencecloud.jfrog.io
-    - name: Lint Chart
-      run: helm lint .
-    - name: Save Chart
-      run: helm chart save . openexperiencecloud.jfrog.io/helm/cloud-openexperience-charts-standalone:latest
-    - name: Push Chart
-      run: helm chart push openexperiencecloud.jfrog.io/helm/cloud-openexperience-charts-standalone:latest
+    - name: Login to jFrog Container Registry (in Helm)
+      run: echo ${{ secrets.HELM_TOKEN }} | helm registry login -u ${{ secrets.HELM_USERNAME }} --password-stdin https://openexperiencecloud.jfrog.io/helm
+    - name: Build and Deploy Chart
+      run: mvn package
+      env:
+        HELM_USERNAME: ${{secrets.HELM_USERNAME}}
+        HELM_PASSWORD: ${{secrets.HELM_TOKEN}}
     env:
       HELM_EXPERIMENTAL_OCI: '1'
