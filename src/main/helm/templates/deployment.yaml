@@ -48,8 +48,6 @@ spec:
           resources:
             {{- toYaml .Values.resources.cms | nindent 12 }}
           volumeMounts:
-            - name: {{ printf "%s-cms-features-volume" .Chart.Name }}
-              mountPath: /opt/oec/features
             - name: {{ printf "%s-cms-secrets" .Chart.Name }}
               mountPath: /opt/secrets
             - name: {{ printf "%s-cms-volume" .Chart.Name }}
@@ -80,9 +78,6 @@ spec:
             - name: {{ printf "%s-web-config-volume" .Chart.Name }}
               mountPath: /etc/apache2/sites-enabled
       volumes:
-        - name: {{ printf "%s-cms-features-volume" .Chart.Name }}
-          configMap:
-            name: {{ include "oec.fullname" . }}-cms-features-configmap
         - name: {{ printf "%s-cms-secrets" .Chart.Name }}
           secret:
             secretName: {{ include "oec.fullname" . }}-cms-secrets
