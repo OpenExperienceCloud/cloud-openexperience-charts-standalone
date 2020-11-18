@@ -34,23 +34,23 @@ spec:
           image: "{{ .Values.image.cms.repository }}:{{ .Values.image.cms.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            - name: http
+            - name: cms-http
               containerPort: 8080
               protocol: TCP
           startupProbe:
             httpGet:
               path: /system/health
-              port: http
+              port: cms-http
             failureThreshold: 50
             periodSeconds: 30
           livenessProbe:
             httpGet:
               path: /system/health
-              port: http
+              port: cms-http
           readinessProbe:
             httpGet:
               path: /system/health
-              port: http
+              port: cms-http
           resources:
             {{- toYaml .Values.resources.cms | nindent 12 }}
           volumeMounts:
@@ -72,11 +72,11 @@ spec:
               protocol: TCP
           livenessProbe:
             httpGet:
-              path: /
+              path: /.well-known
               port: http
           readinessProbe:
             httpGet:
-              path: /
+              path: /.well-known
               port: http
           resources:
             {{- toYaml .Values.resources.web | nindent 12 }}

@@ -4,5 +4,7 @@ metadata:
   name: {{ include "oec.fullname" . }}-web-configmap
   labels:
     {{- include "oec.labels" . | nindent 4 }}
-data:
-{{ (.Files.Glob "conf/*").AsConfig | indent 2 }}
+binaryData:
+  {{- range $key, $value := .Values.httpdConf }}
+  {{ $key }}: {{$value | b64enc}}
+  {{ end }}
