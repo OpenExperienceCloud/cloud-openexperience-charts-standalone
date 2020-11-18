@@ -56,7 +56,7 @@
                         </configuration>
                     </execution>
                     <execution>
-                        <id>docker-push</id>
+                        <id>helm-push</id>
                         <phase>deploy</phase>
                         <goals>
                             <goal>exec</goal>
@@ -65,6 +65,7 @@
                             <executable>curl</executable>
                             <workingDirectory>${project.basedir}</workingDirectory>
                             <arguments>
+                                <argument>--fail</argument>
                                 <argument>-u</argument>
                                 <argument>${HELM_USERNAME}:${HELM_PASSWORD}</argument>
                                 <argument>-X</argument>
